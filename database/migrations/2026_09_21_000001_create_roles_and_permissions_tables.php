@@ -8,11 +8,20 @@ return new class extends Migration
 {
     public function up(): void
     {
+        Schema::create('roles', function (Blueprint $table) {
+            $table->id();
+            $table->string('name');
+            $table->string('slug')->unique();
+            $table->unsignedTinyInteger('level')->default(0); // higher = more powerful; blocks privilege escalation
+            $table->string('description')->nullable();
+            $table->timestamps();
+        });
+
         Schema::create('permissions', function (Blueprint $table) {
             $table->id();
-            $table->string('name');                // e.g. "View Users"
-            $table->string('slug')->unique();       // e.g. "users.view"
-            $table->string('group')->default('general'); // e.g. "users", "roles", "activity_log"
+            $table->string('name');
+            $table->string('slug')->unique(); // e.g. users.view
+            $table->string('group')->default('general');
             $table->timestamps();
         });
 
@@ -21,7 +30,6 @@ return new class extends Migration
             $table->foreignId('role_id')->constrained()->cascadeOnDelete();
             $table->foreignId('permission_id')->constrained()->cascadeOnDelete();
             $table->timestamps();
-
             $table->unique(['role_id', 'permission_id']);
         });
     }
@@ -30,5 +38,6 @@ return new class extends Migration
     {
         Schema::dropIfExists('permission_role');
         Schema::dropIfExists('permissions');
+        Schema::dropIfExists('roles');
     }
 };

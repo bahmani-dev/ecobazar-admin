@@ -11,8 +11,8 @@ return new class extends Migration
         Schema::table('users', function (Blueprint $table) {
             $table->foreignId('role_id')->nullable()->after('id')->constrained()->nullOnDelete();
             $table->boolean('is_active')->default(true)->after('role_id');
-            $table->timestamp('last_login_at')->nullable()->after('is_active');
-            $table->string('last_login_ip')->nullable()->after('last_login_at');
+            $table->timestamp('last_login_at')->nullable();
+            $table->string('last_login_ip')->nullable();
         });
     }
 
